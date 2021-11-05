@@ -1,3 +1,28 @@
 #root {
-  color: red;
+  margin: 1rem;
+}
+body{
+  background-color: #E3F6F5;
+}
+.card{
+  background-color: #E4F9F5;
+}
+.card-footer{
+  background-color: #11999E;
+}
+
+.list-group-item{
+  background-color: #11999E;
+}
+
+.card-title{
+  color: #355C7D;
+}
+.card-text{
+  color: #11999E;
+}
+
+.btn-primary{
+  background-color: #3F72AF;
+  border-color: #3F72AF;
 }
