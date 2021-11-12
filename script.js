@@ -3,19 +3,38 @@ function setup() {
   const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
 }
-
+//function for getting episodes
 function makePageForEpisodes(episodeList) {
-  const rootElem = document.getElementById("root");
-  // rootElem.textContent = `Got ${episodeList.length} episode(s)`;
-  // const ulElem = document.createElement("ul");
-  // rootElem.appendChild(ulElem);
-  //create row
-  const rowElem = document.createElement("div");
-  rowElem.classList.add("row");
-  rowElem.classList.add("row-cols-4");
-  rowElem.classList.add("g-4");
-  rootElem.appendChild(rowElem);
+  createEl(episodeList);
+  searchBar();
+}
+
+//function for search bar
+function searchBar() {
+  const searchBar = document.getElementById("search");
+  searchBar.addEventListener("keyup", (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+    const allEpisodes = getAllEpisodes();
+    const filteredEpisodes = allEpisodes.filter((episode) => {
+      return (
+        episode.name.toLowerCase().includes(searchTerm) ||
+        episode.summary.toLowerCase().includes(searchTerm)
+      );
+    });
+    const episodeList = document.getElementsByClassName("row")[0];
+    episodeList.innerHTML = "";
+    createEl(filteredEpisodes);
+  });
+}
+
+//function for creating elements
+function createEl(episodeList) {
+  const episodeText = document.getElementById("basic-addon2");
+  episodeText.textContent = `Displaying ${episodeList.length}/ ${
+    getAllEpisodes().length
+  } episode(s)`;
   episodeList.forEach((episode) => {
+    const rowElem = document.getElementsByClassName("row")[0];
     //create grid style bootstrap card
     //create col
     const colElem = document.createElement("div");
@@ -42,11 +61,6 @@ function makePageForEpisodes(episodeList) {
     episodeTitle.classList.add("card-title");
     episodeTitle.textContent = episode.name;
     divBodyElem.appendChild(episodeTitle);
-    //season and episode number
-    // const episodeInfo = document.createElement("h6");
-    // episodeInfo.classList.add("card-subtitle");
-    // episodeInfo.textContent = `Season ${episode.season} Episode ${episode.number}`;
-    // divBodyElem.appendChild(episodeInfo);
     //summary
     const episodeSummary = document.createElement("p");
     episodeSummary.classList.add("card-text");

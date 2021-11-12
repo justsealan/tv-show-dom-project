@@ -4,13 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TV Show Project | Selahaddin Alan (justsealan)</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
     <link href="style.css" rel="stylesheet" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   </head>
 
   <body>
     <div id="root">
+      <!-- Search TV Show -->
+      <div>
+        <h1>TV Show Project</h1>
+        <form action="index.php" method="get" class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="search"
+            name="search"
+            placeholder="Search Episodes"
+          />
+          <!-- <button type="submit" class="btn btn-primary">Search</button> -->
+          <span class="input-group-text" id="basic-addon2">Got ... episodes</span>
+        </form>
+      </div>
+
+      <!-- TV Show List with Grid Cards -->
+      <div class="row row-cols-1 row-cols-md-4 g-4">
+
+      </div>
     </div>
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
