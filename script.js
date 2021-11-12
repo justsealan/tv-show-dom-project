@@ -7,22 +7,43 @@ function setup() {
 function makePageForEpisodes(episodeList) {
   createEl(episodeList);
   searchBar();
+  dropdown();
+}
+//function for dropdown
+function dropdown() {
+  const dropdown = document.getElementsByClassName("form-select")[0];
+  const allEpisodes = getAllEpisodes();
+  dropdown.addEventListener("change", (event) => {
+    const selected = event.target.value;
+    const filteredEpisodes = allEpisodes.filter((episode) => {
+      return episode.id === parseInt(selected);
+    });
+    const rowElem = document.getElementsByClassName("row")[0];
+    rowElem.innerHTML = "";
+    createEl(filteredEpisodes);
+  });
+  //Selecting All Episodes option will bring all episodes back
+  dropdown.addEventListener("change", (event) => {
+    if (event.target.value === "All Episodes") {
+      const rowElem = document.getElementsByClassName("row")[0];
+      rowElem.innerHTML = "";
+      createEl(allEpisodes);
+    }
+  });
 }
 
 //function for search bar
 function searchBar() {
   const searchBar = document.getElementById("search");
+  const allEpisodes = getAllEpisodes();
   searchBar.addEventListener("keyup", (event) => {
     const searchTerm = event.target.value.toLowerCase();
-    const allEpisodes = getAllEpisodes();
     const filteredEpisodes = allEpisodes.filter((episode) => {
       return (
         episode.name.toLowerCase().includes(searchTerm) ||
         episode.summary.toLowerCase().includes(searchTerm)
       );
     });
-    const episodeList = document.getElementsByClassName("row")[0];
-    episodeList.innerHTML = "";
     createEl(filteredEpisodes);
   });
 }
@@ -35,6 +56,17 @@ function createEl(episodeList) {
   } episode(s)`;
   episodeList.forEach((episode) => {
     const rowElem = document.getElementsByClassName("row")[0];
+    //create dropdown
+    const dropdown = document.getElementsByClassName("form-select")[0];
+    const option = document.createElement("option");
+    option.value = episode.id;
+    option.textContent = `S${episode.season
+      .toString()
+      .padStart(2, "0")}E${episode.number.toString().padStart(2, "0")} ${
+      episode.name
+    }`;
+    dropdown.appendChild(option);
+
     //create grid style bootstrap card
     //create col
     const colElem = document.createElement("div");

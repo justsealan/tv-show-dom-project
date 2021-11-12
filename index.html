@@ -20,22 +20,25 @@
       <div>
         <h1>TV Show Project</h1>
         <form action="index.php" method="get" class="input-group mb-3">
+          <select class="form-select" id="inputGroupSelect04">
+            <option id="allEpisodes" selected>All Episodes</option>
+          </select>
           <input
             type="text"
-            class="form-control"
+            class="form-control w-50"
             id="search"
             name="search"
             placeholder="Search Episodes"
           />
           <!-- <button type="submit" class="btn btn-primary">Search</button> -->
-          <span class="input-group-text" id="basic-addon2">Got ... episodes</span>
+          <span class="input-group-text" id="basic-addon2"
+            >Got ... episodes</span
+          >
         </form>
       </div>
 
       <!-- TV Show List with Grid Cards -->
-      <div class="row row-cols-1 row-cols-md-4 g-4">
-
-      </div>
+      <div class="row row-cols-1 row-cols-md-4 g-4"></div>
     </div>
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
