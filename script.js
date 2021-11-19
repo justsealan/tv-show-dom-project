@@ -1,20 +1,61 @@
 // You can edit ALL of the code here
+function setup() {
+  const tvShows = getAllShows();
+  tvShowsDropdown(tvShows);
+}
 var count = 0;
-// get all episodes by fetching from api
-fetch("https://api.tvmaze.com/shows/179/episodes").then((response) =>
-  response.json().then((data) => {
-    count++;
-    console.log(count);
-    makePageForEpisodes(data);
-    dropdown(data);
-    searchBar(data);
-    const episodeText = document.getElementById("basic-addon2");
-  })
-);
+//function for tv shows dropdown
+function tvShowsDropdown(tvShows) {
+  //dropdown for tv shows
+  const dropdownTV = document.getElementsByClassName("form-select")[0];
+  //show select must list shows in alphabetical order, case-insensitive.
+  tvShows.sort((a, b) => {
+    if (a.name.toLowerCase() < b.name.toLowerCase()) {
+      return -1;
+    }
+    if (a.name.toLowerCase() > b.name.toLowerCase()) {
+      return 1;
+    }
+    return 0;
+  });
+  //add shows to dropdown
+  tvShows.forEach((show) => {
+    const option = document.createElement("option");
+    option.value = show.id;
+    option.textContent = show.name;
+    dropdownTV.appendChild(option);
+  });
+  dropdownTV.addEventListener("change", (event) => {
+    const rowElem = document.getElementsByClassName("row")[0];
+    rowElem.innerHTML = "";
+    const selectedShow = tvShows.find(
+      (show) => show.id === Number(event.target.value)
+    );
+    //clear the episodes dropdown
+    const dropdownEpisodes = document.getElementsByClassName("form-select")[1];
+    dropdownEpisodes.innerHTML = "";
+    //add all episodes to dropdown
+    const allEpisodes = document.createElement("option");
+    allEpisodes.value = "All Episodes";
+    allEpisodes.textContent = "All Episodes";
+    dropdownEpisodes.appendChild(allEpisodes);
 
-//function for dropdown
+    fetch(`https://api.tvmaze.com/shows/${selectedShow.id}/episodes`).then(
+      (response) =>
+        response.json().then((data) => {
+          count++;
+          console.log(count);
+          makePageForEpisodes(data);
+          dropdown(data);
+          searchBar(data);
+        })
+    );
+  });
+}
+
+//function for episodes dropdown
 function dropdown(episodeList) {
-  const dropdown = document.getElementsByClassName("form-select")[0];
+  const dropdown = document.getElementsByClassName("form-select")[1];
   dropdown.addEventListener("change", (event) => {
     const selected = event.target.value;
     const filteredEpisodes = episodeList.filter((episode) => {
@@ -58,8 +99,8 @@ function searchBar(episodeList) {
 function makePageForEpisodes(episodeList) {
   episodeList.forEach((episode) => {
     const rowElem = document.getElementsByClassName("row")[0];
-    //create dropdown
-    const dropdown = document.getElementsByClassName("form-select")[0];
+    //create dropdown for the episodes
+    const dropdown = document.getElementsByClassName("form-select")[1];
     const option = document.createElement("option");
     option.value = episode.id;
     option.textContent = `S${episode.season
@@ -84,7 +125,12 @@ function makePageForEpisodes(episodeList) {
     //img
     const imgElem = document.createElement("img");
     imgElem.classList.add("card-img-top");
-    imgElem.src = episode.image.medium;
+    if (episode.image !== null) {
+      imgElem.src = episode.image.medium;
+    } else {
+      imgElem.src =
+        "https://via.placeholder.com/210x295/ffffff/666666/?text=TV";
+    }
     divElem.appendChild(imgElem);
     //div-body
     const divBodyElem = document.createElement("div");
@@ -132,3 +178,4 @@ function makePageForEpisodes(episodeList) {
     cardFooter.appendChild(urlButton);
   });
 }
+window.onload = setup;
