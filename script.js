@@ -1,17 +1,17 @@
 // You can edit ALL of the code here
+var count = 0;
 // get all episodes by fetching from api
-async function getEpisodes() {
-  const response = await fetch("https://api.tvmaze.com/shows/179/episodes");
-  const data = await response.json();
-  return data;
-}
-function setup() {
-  getEpisodes().then((episodeList) => {
-    makePageForEpisodes(episodeList);
-    dropdown(episodeList);
-    searchBar();
-  });
-}
+fetch("https://api.tvmaze.com/shows/179/episodes").then((response) =>
+  response.json().then((data) => {
+    count++;
+    console.log(count);
+    makePageForEpisodes(data);
+    dropdown(data);
+    searchBar(data);
+    const episodeText = document.getElementById("basic-addon2");
+  })
+);
+
 //function for dropdown
 function dropdown(episodeList) {
   const dropdown = document.getElementsByClassName("form-select")[0];
@@ -29,39 +29,33 @@ function dropdown(episodeList) {
     if (event.target.value === "All Episodes") {
       const rowElem = document.getElementsByClassName("row")[0];
       rowElem.innerHTML = "";
-      getEpisodes().then((episodeList) => {
-        makePageForEpisodes(episodeList);
-      });
+      makePageForEpisodes(episodeList);
     }
   });
 }
 
 //function for search bar
-function searchBar() {
+function searchBar(episodeList) {
+  const episodeText = document.getElementById("basic-addon2");
+  episodeText.textContent = `Got ${episodeList.length} episode(s)`;
   const searchBar = document.getElementById("search");
   searchBar.addEventListener("keyup", (event) => {
     const searchTerm = event.target.value.toLowerCase();
-    getEpisodes().then((episodeList) => {
-      let search = episodeList.filter((episode) => {
-        return (
-          episode.name.toLowerCase().includes(searchTerm) ||
-          episode.summary.toLowerCase().includes(searchTerm)
-        );
-      });
-      const rowElem = document.getElementsByClassName("row")[0];
-      rowElem.innerHTML = "";
-      makePageForEpisodes(search);
+    let search = episodeList.filter((episode) => {
+      return (
+        episode.name.toLowerCase().includes(searchTerm) ||
+        episode.summary.toLowerCase().includes(searchTerm)
+      );
     });
+    const rowElem = document.getElementsByClassName("row")[0];
+    rowElem.innerHTML = "";
+    episodeText.textContent = `Displaying ${search.length}/${episodeList.length} episode(s)`;
+    makePageForEpisodes(search);
   });
 }
 
 //function for creating elements
 function makePageForEpisodes(episodeList) {
-  const episodeText = document.getElementById("basic-addon2");
-  getEpisodes().then((data) => {
-    episodeText.textContent = `Displaying ${episodeList.length}/ ${data.length} episode(s)`;
-  });
-
   episodeList.forEach((episode) => {
     const rowElem = document.getElementsByClassName("row")[0];
     //create dropdown
@@ -75,7 +69,7 @@ function makePageForEpisodes(episodeList) {
     }`;
     dropdown.appendChild(option);
 
-    //create grid style bootstrap card
+    //create grid style bootstrap cards
     //create col
     const colElem = document.createElement("div");
     colElem.classList.add("col");
@@ -138,5 +132,3 @@ function makePageForEpisodes(episodeList) {
     cardFooter.appendChild(urlButton);
   });
 }
-
-window.onload = setup;
