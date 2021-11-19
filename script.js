@@ -1,33 +1,37 @@
-//You can edit ALL of the code here
-function setup() {
-  const allEpisodes = getAllEpisodes();
-  makePageForEpisodes(allEpisodes);
+// You can edit ALL of the code here
+// get all episodes by fetching from api
+async function getEpisodes() {
+  const response = await fetch("https://api.tvmaze.com/shows/179/episodes");
+  const data = await response.json();
+  return data;
 }
-//function for getting episodes
-function makePageForEpisodes(episodeList) {
-  createEl(episodeList);
-  searchBar();
-  dropdown();
+function setup() {
+  getEpisodes().then((episodeList) => {
+    makePageForEpisodes(episodeList);
+    dropdown(episodeList);
+    searchBar();
+  });
 }
 //function for dropdown
-function dropdown() {
+function dropdown(episodeList) {
   const dropdown = document.getElementsByClassName("form-select")[0];
-  const allEpisodes = getAllEpisodes();
   dropdown.addEventListener("change", (event) => {
     const selected = event.target.value;
-    const filteredEpisodes = allEpisodes.filter((episode) => {
+    const filteredEpisodes = episodeList.filter((episode) => {
       return episode.id === parseInt(selected);
     });
     const rowElem = document.getElementsByClassName("row")[0];
     rowElem.innerHTML = "";
-    createEl(filteredEpisodes);
+    makePageForEpisodes(filteredEpisodes);
   });
   //Selecting All Episodes option will bring all episodes back
   dropdown.addEventListener("change", (event) => {
     if (event.target.value === "All Episodes") {
       const rowElem = document.getElementsByClassName("row")[0];
       rowElem.innerHTML = "";
-      createEl(allEpisodes);
+      getEpisodes().then((episodeList) => {
+        makePageForEpisodes(episodeList);
+      });
     }
   });
 }
@@ -35,25 +39,29 @@ function dropdown() {
 //function for search bar
 function searchBar() {
   const searchBar = document.getElementById("search");
-  const allEpisodes = getAllEpisodes();
   searchBar.addEventListener("keyup", (event) => {
     const searchTerm = event.target.value.toLowerCase();
-    const filteredEpisodes = allEpisodes.filter((episode) => {
-      return (
-        episode.name.toLowerCase().includes(searchTerm) ||
-        episode.summary.toLowerCase().includes(searchTerm)
-      );
+    getEpisodes().then((episodeList) => {
+      let search = episodeList.filter((episode) => {
+        return (
+          episode.name.toLowerCase().includes(searchTerm) ||
+          episode.summary.toLowerCase().includes(searchTerm)
+        );
+      });
+      const rowElem = document.getElementsByClassName("row")[0];
+      rowElem.innerHTML = "";
+      makePageForEpisodes(search);
     });
-    createEl(filteredEpisodes);
   });
 }
 
 //function for creating elements
-function createEl(episodeList) {
+function makePageForEpisodes(episodeList) {
   const episodeText = document.getElementById("basic-addon2");
-  episodeText.textContent = `Displaying ${episodeList.length}/ ${
-    getAllEpisodes().length
-  } episode(s)`;
+  getEpisodes().then((data) => {
+    episodeText.textContent = `Displaying ${episodeList.length}/ ${data.length} episode(s)`;
+  });
+
   episodeList.forEach((episode) => {
     const rowElem = document.getElementsByClassName("row")[0];
     //create dropdown
