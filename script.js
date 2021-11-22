@@ -2,6 +2,7 @@
 function setup() {
   const tvShows = getAllShows();
   tvShowsDropdown(tvShows);
+  makePageForShows(tvShows);
 }
 var count = 0;
 //function for tv shows dropdown
@@ -39,7 +40,6 @@ function tvShowsDropdown(tvShows) {
     allEpisodes.value = "All Episodes";
     allEpisodes.textContent = "All Episodes";
     dropdownEpisodes.appendChild(allEpisodes);
-
     fetch(`https://api.tvmaze.com/shows/${selectedShow.id}/episodes`).then(
       (response) =>
         response.json().then((data) => {
@@ -175,6 +175,76 @@ function makePageForEpisodes(episodeList) {
     urlButton.href = episode.url;
     urlButton.target = "_blank";
     urlButton.textContent = "Episode Page";
+    cardFooter.appendChild(urlButton);
+  });
+}
+
+//make page for TV shows
+function makePageForShows(showList) {
+  showList.forEach((show) => {
+    const rowElem = document.getElementsByClassName("row")[0];
+    //create col
+    const colElem = document.createElement("div");
+    colElem.classList.add("col");
+    rowElem.appendChild(colElem);
+    //div card
+    const divElem = document.createElement("div");
+    divElem.classList.add("card");
+    divElem.classList.add("h-100");
+    divElem.classList.add("text-center");
+    divElem.style.width = "25rem";
+    colElem.appendChild(divElem);
+    //img
+    const imgElem = document.createElement("img");
+    imgElem.classList.add("card-img-top");
+    if (show.image !== null) {
+      imgElem.src = show.image.medium;
+    } else {
+      imgElem.src =
+        "https://via.placeholder.com/210x295/ffffff/666666/?text=TV";
+    }
+    divElem.appendChild(imgElem);
+    //div-body
+    const divBodyElem = document.createElement("div");
+    divBodyElem.classList.add("card-body");
+    divElem.appendChild(divBodyElem);
+    //title
+    const showTitle = document.createElement("h5");
+    showTitle.classList.add("card-title");
+    showTitle.textContent = show.name;
+    divBodyElem.appendChild(showTitle);
+    //summary
+    const showSummary = document.createElement("p");
+    showSummary.classList.add("card-text");
+    showSummary.innerHTML = show.summary;
+    divBodyElem.appendChild(showSummary);
+    //card footer
+    const cardFooter = document.createElement("div");
+    cardFooter.classList.add("card-footer");
+    cardFooter.classList.add("text-muted");
+    divElem.appendChild(cardFooter);
+    //ul for show code
+    const showCode = document.createElement("ul");
+    showCode.classList.add("list-group");
+    showCode.classList.add("list-group-flush");
+    cardFooter.appendChild(showCode);
+    //show code
+    const showCodeElem = document.createElement("li");
+    showCodeElem.classList.add("list-group-item");
+    showCodeElem.textContent = `${show.id}`;
+    showCode.appendChild(showCodeElem);
+    //show url
+    const sourceElem = document.createElement("li");
+    sourceElem.classList.add("list-group-item");
+    sourceElem.textContent = "Source: TVMaze.com";
+    showCode.appendChild(sourceElem);
+    //button for url
+    const urlButton = document.createElement("a");
+    urlButton.classList.add("btn");
+    urlButton.classList.add("btn-primary");
+    urlButton.href = show.url;
+    urlButton.target = "_blank";
+    urlButton.textContent = "Show Page";
     cardFooter.appendChild(urlButton);
   });
 }
